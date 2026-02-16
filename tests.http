@@ -1,0 +1,35 @@
+### Request 1: With City and State (Correct)
+POST http://localhost:3000/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "Los Angeles",
+    "state": "CA",
+    "zipcode": ""   
+}
+
+### Request 2: With only zipcode (Correct)
+POST http://localhost:3000/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "",
+    "state": "",
+    "zipcode": "63119"   
+}
+
+### Request 2: With Lat and Long (Correct)
+POST http://localhost:3000/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "34.0287",
+    "long": "-90.4924",
+    "city": "",
+    "state": "",
+    "zipcode": ""   
+}
