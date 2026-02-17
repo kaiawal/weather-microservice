@@ -22,13 +22,49 @@ content-type: application/json
     "zipcode": "63119"   
 }
 
-### Request 2: With Lat and Long (Correct)
+### Request 3: With Lat and Long (Correct)
 POST http://localhost:3000/ HTTP/1.1
 content-type: application/json
 
 {
     "lat": "34.0287",
     "long": "-90.4924",
+    "city": "",
+    "state": "",
+    "zipcode": ""   
+}
+
+### Request 4: Invalid zipcode (Incorrect)
+POST http://localhost:3000/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "",
+    "state": "",
+    "zipcode": "63"   
+}
+
+### Request 5: Invalid city (Incorrect)
+POST http://localhost:3000/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "InvalidCity",
+    "state": "CA",
+    "zipcode": ""   
+}
+
+### Request 6: Invalid information provided (Incorrect)
+POST http://localhost:3000/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "1900",
+    "long": "1234",
     "city": "",
     "state": "",
     "zipcode": ""   
