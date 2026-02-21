@@ -6,8 +6,8 @@ This microservice will return weather data for the specific location and optiona
 You have the option of providing a city and state, latitute and longitude coordinates, or a zipcode The API will return current weather data of that area. Most of this data will be accessed through current.[variable name]
 
 **In other words you have to provide:**
-city & state
-latitute & longitude
+city & state,
+latitute & longitude,
 *or* zipcode
 
 ### Example API calls:
@@ -107,8 +107,8 @@ Here is another example call with a zipcode provided
 You have the option of providing a city and state, latitute and longitude coordinates, or a zipcode along with a time. The provided data can range from January 1st, 1979 - 4 days in the future.
 
 **Same as above, you have to provide:**
-city & state
-latitute & longitude
+city & state,
+latitute & longitude,
 or zipcode
 
 As well as the date variable which follows the pattern:
