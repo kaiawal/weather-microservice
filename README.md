@@ -13,6 +13,7 @@ latitute & longitude
 ### Example API calls:
 This is an example call with a city and state
 **POST request "/"**
+```json
 {
     "lat": "",
     "long": "",
@@ -20,8 +21,10 @@ This is an example call with a city and state
     "state": "CA",
     "zipcode": ""   
 }
+```
 
 **Response**
+```json
 {
   "lat": 34.0537,
   "lon": -118.2428,
@@ -52,9 +55,11 @@ This is an example call with a city and state
     ]
   }
 }
+```
 
 Here is another example call with a zipcode provided
 **POST Request "/"**
+```json
 {
     "lat": "",
     "long": "",
@@ -62,8 +67,10 @@ Here is another example call with a zipcode provided
     "state": "",
     "zipcode": "63119"   
 }
+```
 
 **Response**
+```json
 {
   "lat": 38.5893,
   "lon": -90.3481,
@@ -93,6 +100,7 @@ Here is another example call with a zipcode provided
     ]
   }
 }
+```
 
 
 ## Recieve weather data of a location at a specific time
@@ -108,6 +116,7 @@ date = YYYY-MM-DD
 
 ### Example API Call
 **POST Request "/date"**
+```json
 {
     "lat": "",
     "long": "",
@@ -116,8 +125,10 @@ date = YYYY-MM-DD
     "date": "2026-02-10",
     "zipcode": ""   
 }
+```
 
 **Response**
+```json
 {
   "lat": 34.0536909,
   "lon": -118.242766,
@@ -151,12 +162,15 @@ date = YYYY-MM-DD
     }
   }
 }
+```
 
 
 ## Error Response
 On any failed API calls or server errors, the API will always return a JSON with an error code labeled "error" inside. Here is an example error response:
 
 HTTP 404 Not Found
+```json
 {
   "error": "No location found for the provided city and state"
 }
+```
