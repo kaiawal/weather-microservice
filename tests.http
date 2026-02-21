@@ -1,5 +1,5 @@
 ### Request 1: With City and State (Correct)
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3634/ HTTP/1.1
 content-type: application/json
 
 {
@@ -11,7 +11,7 @@ content-type: application/json
 }
 
 ### Request 2: With only zipcode (Correct)
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3634/ HTTP/1.1
 content-type: application/json
 
 {
@@ -23,7 +23,7 @@ content-type: application/json
 }
 
 ### Request 3: With Lat and Long (Correct)
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3634/ HTTP/1.1
 content-type: application/json
 
 {
@@ -35,7 +35,7 @@ content-type: application/json
 }
 
 ### Request 4: Invalid zipcode (Incorrect)
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3634/ HTTP/1.1
 content-type: application/json
 
 {
@@ -47,7 +47,7 @@ content-type: application/json
 }
 
 ### Request 5: Invalid city (Incorrect)
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3634/ HTTP/1.1
 content-type: application/json
 
 {
@@ -59,7 +59,7 @@ content-type: application/json
 }
 
 ### Request 6: Invalid information provided (Incorrect)
-POST http://localhost:3000/ HTTP/1.1
+POST http://localhost:3634/ HTTP/1.1
 content-type: application/json
 
 {
@@ -67,5 +67,59 @@ content-type: application/json
     "long": "1234",
     "city": "",
     "state": "",
+    "zipcode": ""   
+}
+
+### Request 6.5: No infomation provided (Incorrect)
+POST http://localhost:3634/ HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "",
+    "state": "",
+    "zipcode": ""   
+}
+
+
+## -- /date endpoint --
+
+### Request 7: With City and State and Correct Time format (Correct)
+POST http://localhost:3634/date HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "Los Angeles",
+    "state": "CA",
+    "date": "2026-02-10",
+    "zipcode": ""   
+}
+
+### Request 8: With City and State and Correct Time format (Correct)
+POST http://localhost:3634/date HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "",
+    "state": "",
+    "date": "1999-12-30",
+    "zipcode": "92064"   
+}
+
+### Request 9: Invalid date time format (Incorrect)
+POST http://localhost:3634/date HTTP/1.1
+content-type: application/json
+
+{
+    "lat": "",
+    "long": "",
+    "city": "Los Angeles",
+    "state": "CA",
+    "date": "2000/10/10",
     "zipcode": ""   
 }
