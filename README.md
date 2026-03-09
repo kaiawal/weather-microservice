@@ -174,3 +174,6 @@ HTTP 404 Not Found
   "error": "No location found for the provided city and state"
 }
 ```
+
+### UML SEQUENCE DIAGRAM 
+<img width="834" height="566" alt="Weather Microservice UML (2)" src="https://github.com/user-attachments/assets/bb1dca41-b3a8-4a28-9e13-690fbdc294c7" />
