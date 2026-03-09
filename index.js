@@ -67,7 +67,9 @@ app.post("/", async (req, res) => {
             
             const location = await response.json();
             if (!location.length) {
-                return res.status(404).json({ error: "No location found for the provided city and state" });
+                return res.status(404).json({
+                    error: "No location found for the provided city and state"
+                });
             }
 
             lat = location[0].lat;
@@ -75,7 +77,9 @@ app.post("/", async (req, res) => {
         }
         catch (err) {
             console.error("Failed to fetch location")
-            return res.status(500).json({ error: "Internal server error while fetching weather data" });
+            return res.status(500).json({
+                error: "Internal server error while fetching weather data"
+            });
         }
     }
 
@@ -94,7 +98,9 @@ app.post("/", async (req, res) => {
         }
         catch (err) {
             console.error("Failed to fetch location")
-            return res.status(500).json({ error: "Internal server error while fetching location data" });
+            return res.status(500).json({
+                error: "Internal server error while fetching location data"
+            });
         }
     }
 
@@ -114,7 +120,8 @@ app.post("/", async (req, res) => {
         }
     catch (err) {
         console.error("Failed to fetch weather")
-        return res.status(500).json({ error: "Internal server error while fetching weather data" });
+        return res.status(500).json(
+            { error: "Internal server error while fetching weather data" });
     }
 });
 
@@ -140,7 +147,9 @@ app.post("/date", async (req, res) => {
             
             const location = await response.json();
             if (!location.length) {
-                return res.status(404).json({ error: "No location found for the provided city and state" });
+                return res.status(404).json({
+                    error: "No location found for the provided city and state"
+                });
             }
 
             lat = location[0].lat;
@@ -148,7 +157,9 @@ app.post("/date", async (req, res) => {
         }
         catch (err) {
                 console.error("Failed to fetch location")
-                return res.status(500).json({ error: "Internal server error while fetching weather data" });
+                return res.status(500).json({
+                    error: "Internal server error while fetching weather data"
+                });
         }
     }
 
@@ -168,13 +179,17 @@ app.post("/date", async (req, res) => {
         }
         catch (err) {
             console.error("Failed to fetch location")
-            return res.status(500).json({ error: "Internal server error while fetching location data" });
+            return res.status(500).json({
+                error: "Internal server error while fetching location data"
+            });
         }
     }
 
     const regexCheck = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
     if (!date || !regexCheck.test(date)) {
-            return res.status(400).json({error: "Please provide a date in YYYY-MM-DD when calling /date"});
+            return res.status(400).json({
+                error: "Please provide a date in YYYY-MM-DD when calling /date"
+            });
         }
 
     try {
@@ -193,6 +208,7 @@ app.post("/date", async (req, res) => {
         }
     catch (err) {
         console.error("Failed to fetch weather")
-        return res.status(500).json({ error: "Internal server error while fetching weather data" });
+        return res.status(500).json(
+            { error: "Internal server error while fetching weather data" });
     }
 });
