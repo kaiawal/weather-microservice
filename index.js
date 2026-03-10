@@ -47,7 +47,6 @@ app.listen(PORT, () => {
     console.log(`Server listening on port: ${PORT}`)
 });
 
-
 app.post("/", async (req, res) => {
     let { lat, long, city, state, zipcode } = req.body;
 
