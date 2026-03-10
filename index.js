@@ -22,25 +22,79 @@ async function getCoordsFromZip(zipcode) {
     )
 }
 
-async function checkResponse(response) {
+async function getWeatherData(lat, long, date=undefined) {
+    if (date) {
+        encodeURIComponent
+        return fetch(
+            `https://api.openweathermap.org/data/3.0/onecall/day_summary?lat=${lat}&lon=${long}&date=${date}&units=imperial&appid=${API_KEY}`
+        )
+    }
+    return fetch(
+        `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&units=imperial&appid=${API_KEY}`
+    )
+}
+
+async function checkResponse(response, data) {
     if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.cod) {
-            return {
-                status: Number(errorData.cod) || response.status,
-                body: {
-                    error: errorData.message,
-                    parameters: errorData.parameters
-                }
-            };
-        }
+        const errMsg = data?.message || "Failed to fetch weather data";
         return {
-            status: response.status,
-            body: { error: "Failed to fetch weather data" }
+            status: data?.cod || response.status,
+            body: { error: errMsg, parameters: data?.parameters }
         };
     }
-
     return null;
+}
+
+async function cityCoordsGetter(city, state) {
+    const response = await getCoordsFromCity(city, state);
+    const location = await response.json();
+    
+    if (!location.length) {
+        throw new Error("No location found for the provided city and state");
+    }
+
+    const error = await checkResponse(response, location);
+    if (error) {
+        throw new Error(error.body.message); 
+    }
+    
+    return [location[0].lat, location[0].lon];
+}
+
+async function zipcodeCoordsGetter(zipcode) {
+    const response = await getCoordsFromZip(zipcode);
+    const location = await response.json();
+
+    const error = await checkResponse(response, location);
+    if (error) {
+        throw new Error(error.body.error);
+    }
+
+    if (!location.lat || !location.lon) {
+        throw new Error("No location found for the provided zipcode");
+    }
+
+    return [location.lat, location.lon];
+}
+
+async function weatherGetter(lat, long, date=undefined) {
+    let response;
+
+    if (date) {
+        response = await getWeatherData(lat, long, date)
+    } 
+    else {
+        response = await getWeatherData(lat, long)
+    }
+
+    const weather = await response.json()
+
+    const error = await checkResponse(response, weather);
+    if (error) {
+        throw new Error(error.body.message); 
+    }
+
+    return weather
 }
 
 app.listen(PORT, () => {
@@ -55,75 +109,30 @@ app.post("/", async (req, res) => {
     }
 
     // grabbing coords from city
-    else if ( (!lat || !long) && city && state) {
+    else if ((!lat || !long) && city && state) {
         try {
-            const response = await getCoordsFromCity(city, state);
-            
-            const error = await checkResponse(response);
-            if (error) {
-                return res.status(error.status).json(error.body);
-            }
-            
-            const location = await response.json();
-            if (!location.length) {
-                return res.status(404).json({
-                    error: "No location found for the provided city and state"
-                });
-            }
-
-            lat = location[0].lat;
-            long = location[0].lon;
-        }
-        catch (err) {
-            console.error("Failed to fetch location")
-            return res.status(500).json({
-                error: "Internal server error while fetching weather data"
-            });
+            [lat, long] = await cityCoordsGetter(city, state);
+        } catch (err) {
+            return res.status(404).json({ error: err.message });
         }
     }
 
     // ZIPCODE ONLY 
-    else if ((!lat || !long) && !city && !state) {
+    else if ((!lat || !long) && zipcode) {
         try {
-            const response = await getCoordsFromZip(zipcode);
-            
-            const error = await checkResponse(response);
-            if (error) {
-                return res.status(error.status).json(error.body);
-            }
-            const location = await response.json();
-            lat = location.lat;
-            long = location.lon;
-        }
-        catch (err) {
-            console.error("Failed to fetch location")
-            return res.status(500).json({
-                error: "Internal server error while fetching location data"
-            });
+            [lat, long] = await zipcodeCoordsGetter(zipcode);
+        } catch (err) {
+            return res.status(404).json({ error: err.message });
         }
     }
 
     try {
-        const response = await fetch(
-            `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&exclude=minutely,hourly,daily&units=imperial&appid=${API_KEY}`
-        )
-
-        const error = await checkResponse(response);
-            if (error) {
-                return res.status(error.status).json(error.body);
-            }
-
-        const weather = await response.json();
-        
+        const weather = await weatherGetter(lat, long);
         return res.status(200).send(weather);
-        }
-    catch (err) {
-        console.error("Failed to fetch weather")
-        return res.status(500).json(
-            { error: "Internal server error while fetching weather data" });
+    } catch (err) {
+        return res.status(404).json({ error: err.message });
     }
 });
-
 
 
 // Returns weather from specified date and location
@@ -135,52 +144,20 @@ app.post("/date", async (req, res) => {
     }
     
     // get city lat & long
-    else if ( (!lat || !long) && city && state) {
+    else if ((!lat || !long) && city && state) {
         try {
-            const response = await getCoordsFromCity(city, state);
-            
-            const error = await checkResponse(response);
-            if (error) {
-                return res.status(error.status).json(error.body);
-            }
-            
-            const location = await response.json();
-            if (!location.length) {
-                return res.status(404).json({
-                    error: "No location found for the provided city and state"
-                });
-            }
-
-            lat = location[0].lat;
-            long = location[0].lon;
-        }
-        catch (err) {
-                console.error("Failed to fetch location")
-                return res.status(500).json({
-                    error: "Internal server error while fetching weather data"
-                });
+            [lat, long] = await cityCoordsGetter(city, state);
+        } catch (err) {
+            return res.status(404).json({ error: err.message });
         }
     }
 
     // ZIPCODE ONLY 
     else if ((!lat || !long) && !city && !state) {
         try {
-            const response = await getCoordsFromZip(zipcode);
-            
-            const error = await checkResponse(response);
-            if (error) {
-                return res.status(error.status).json(error.body);
-            }
-            
-            const location = await response.json();
-            lat = location.lat;
-            long = location.lon;
-        }
-        catch (err) {
-            console.error("Failed to fetch location")
-            return res.status(500).json({
-                error: "Internal server error while fetching location data"
-            });
+            [lat, long] = await zipcodeCoordsGetter(zipcode);
+        } catch (err) {
+            return res.status(404).json({ error: err.message });
         }
     }
 
@@ -192,22 +169,9 @@ app.post("/date", async (req, res) => {
         }
 
     try {
-        const response = await fetch(
-            `https://api.openweathermap.org/data/3.0/onecall/day_summary?lat=${lat}&lon=${long}&date=${date}&units=imperial&appid=${API_KEY}`
-        )   
-
-        const error = await checkResponse(response);
-        if (error) {
-            return res.status(error.status).json(error.body);
-        }
-
-        const weather = await response.json();
-        
+        const weather = await weatherGetter(lat, long, date);
         return res.status(200).send(weather);
-        }
-    catch (err) {
-        console.error("Failed to fetch weather")
-        return res.status(500).json(
-            { error: "Internal server error while fetching weather data" });
+    } catch (err) {
+        return res.status(404).json({ error: err.message });
     }
 });
